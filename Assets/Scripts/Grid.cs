@@ -6,8 +6,6 @@ public class Grid : MonoBehaviour {
     public int height;
     public int width;
     
-    public float buffer = 1f;
-
     public Cell cellPrefab;
 
     Cell[] cells;
@@ -24,9 +22,16 @@ public class Grid : MonoBehaviour {
     }
 
     void CreateCell(int x, int z, int index) {
-        Vector3 position; 
-        position.x = x * 10f + buffer;
-        position.z = z * 10f +buffer;
+        Vector3 position;
+
+        float offset = 2.5f;
+        float buffer = 1.0f;
+        if(z%2 != 0) {
+            offset = -offset;
+        }
+
+        position.x = x * 10f + x*buffer + offset;
+        position.z = z * 10f + z*buffer;
         position.y = 0f;
 
         Cell cell = cells[index] = Instantiate<Cell>(cellPrefab);
