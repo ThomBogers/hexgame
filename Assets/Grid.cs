@@ -6,7 +6,7 @@ public class Grid : MonoBehaviour {
     public int height;
     public int width;
     
-    public float buffer;
+    public float buffer = 1f;
 
     public Cell cellPrefab;
 
@@ -14,7 +14,6 @@ public class Grid : MonoBehaviour {
 
     // Use this for initialization
 	void Start () {
-        print("Setting up grid");
         cells = new Cell[height * width];
 
         for (int z = 0, i = 0; z < height; z++) {
@@ -25,11 +24,10 @@ public class Grid : MonoBehaviour {
     }
 
     void CreateCell(int x, int z, int index) {
-        print("Creating cell");
         Vector3 position; 
         position.x = x * 10f + buffer;
-        position.y = 0f + buffer;
         position.z = z * 10f +buffer;
+        position.y = 0f;
 
         Cell cell = cells[index] = Instantiate<Cell>(cellPrefab);
         cell.transform.SetParent(transform, false);
