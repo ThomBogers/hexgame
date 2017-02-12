@@ -5,6 +5,8 @@ using UnityEngine;
 public class Grid : MonoBehaviour {
     public int height;
     public int width;
+
+    public float cellSize;
     
     public Cell cellPrefab;
 
@@ -23,19 +25,27 @@ public class Grid : MonoBehaviour {
 
     void CreateCell(int x, int z, int index) {
         Vector3 position;
+        Quaternion rotation = new Quaternion();
 
-        float offset = 2.5f;
-        if(z%2 != 0) {
-            offset = -offset;
+        cellPrefab.setSize(cellSize);
+        float innerRadius = cellPrefab.getInnerRadius();
+        float outerRadius = cellPrefab.getOuterRadius();
+
+        float offset = 0.0f;
+        if (x%2 != 0) {
+            offset = innerRadius;
         }
 
-        position.x = x * 10f + x + offset;
-        position.z = z * 10f + z;
+        position.x = x * outerRadius * 1.5f;
+        position.z = z * innerRadius * 2.0f + offset;
         position.y = 0f;
 
-        Cell cell = cells[index] = Instantiate<Cell>(cellPrefab);
+        Cell cell = cells[index] = Instantiate<Cell>(cellPrefab, position, rotation);
+
         cell.transform.SetParent(transform, false);
         cell.transform.localPosition = position;
+        cell.index = index;
+
     }
     // Update is called once per frame
     void Update () {
