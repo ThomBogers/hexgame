@@ -21,7 +21,7 @@ public class Player_movement : MonoBehaviour {
         var z = Input.GetAxis("Vertical") * Time.deltaTime * movespeed;
         var y = Input.GetAxis("Jump") * Time.deltaTime * jumpspeed;
 
-        Debug.Log("x = " + x + "z = " + z + "y = "+ y);
+        //Debug.Log("x = " + x + "z = " + z + "y = "+ y);
 
         transform.Translate(x, y, z);
 

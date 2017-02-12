@@ -25,13 +25,12 @@ public class Grid : MonoBehaviour {
         Vector3 position;
 
         float offset = 2.5f;
-        float buffer = 1.0f;
         if(z%2 != 0) {
             offset = -offset;
         }
 
-        position.x = x * 10f + x*buffer + offset;
-        position.z = z * 10f + z*buffer;
+        position.x = x * 10f + x + offset;
+        position.z = z * 10f + z;
         position.y = 0f;
 
         Cell cell = cells[index] = Instantiate<Cell>(cellPrefab);
