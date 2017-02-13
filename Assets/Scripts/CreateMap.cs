@@ -14,15 +14,17 @@ public class CreateMap : MonoBehaviour {
 	void Start () {
 
         Grid grid = Instantiate<Grid>(gridPrefab);
+        grid.name = "Grid";
         grid.transform.SetParent(transform, false);
 
         int x = 0; // (int)Random.Range(0, grid.width);
         int y = 0; // (int)Random.Range(0, grid.height);
 
         Vector3 playerPosition = grid.getPositionFromCoordinate(x, y);
-
+        playerPosition.y = 10;
         Player player = Instantiate<Player>(playerPrefab);
-        player.transform.SetParent(grid.transform, false);
+        player.name = "Player";
+        player.transform.SetParent(transform, false);
         player.transform.localPosition = playerPosition;
 
         for(int i = 0; i < numberOfEnemies; i++)
@@ -31,11 +33,11 @@ public class CreateMap : MonoBehaviour {
             y = (int)Random.Range(0, grid.height);
 
             Vector3 enemyPosition = grid.getPositionFromCoordinate(x, y);
+            enemyPosition.y = 10;
             Enemy enemy = Instantiate<Enemy>(enemyPrefab);
-            enemy.transform.SetParent(grid.transform, false);
+            enemy.name = "Enemy " + i;
+            enemy.transform.SetParent(transform, false);
             enemy.transform.localPosition = enemyPosition;
-
-
 
         }
 

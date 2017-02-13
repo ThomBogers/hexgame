@@ -29,10 +29,10 @@ public class Cell : MonoBehaviour {
     }
 
     // Use this for initialization
-    void Awake () {
+    void Start () {
         Mesh mesh = CreateHexMesh(cellSize);
 
-        gameObject.name = "HexCell";
+        gameObject.name = "HexCell " + this.index;
 
         MeshFilter meshFilter = gameObject.AddComponent(typeof(MeshFilter)) as MeshFilter;
         meshFilter.mesh = mesh;
@@ -56,6 +56,18 @@ public class Cell : MonoBehaviour {
         renderer.material.mainTexture = texture;
 
         renderer.material.color = color;
+
+        GameObject textobj = new GameObject();
+        textobj.layer = 8; //Background texts
+        textobj.name = "HexCell "+ this.index +" text";
+        TextMesh textmesh = textobj.AddComponent(typeof(TextMesh)) as TextMesh;
+        textmesh.text = this.index.ToString();
+        textmesh.fontSize = 50;
+        textmesh.color = Color.black;
+        textobj.transform.SetParent(gameObject.transform, false);
+        textobj.transform.Translate(-3.0f, 0.0f, 3.0f);
+        textobj.transform.Rotate(90.0f, 0.0f, 0.0f);
+
 
     }
 
