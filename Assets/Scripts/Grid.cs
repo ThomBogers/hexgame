@@ -13,7 +13,9 @@ public class Grid : MonoBehaviour {
     Cell[] cells;
 
     // Use this for initialization
-	void Start () {
+	void Awake ()
+    {
+        cellPrefab.setSize(cellSize);
         cells = new Cell[height * width];
 
         for (int z = 0, i = 0; z < height; z++) {
@@ -23,22 +25,27 @@ public class Grid : MonoBehaviour {
         }
     }
 
-    void CreateCell(int x, int z, int index) {
+   public Vector3 getPositionFromCoordinate(int x, int z) {
         Vector3 position;
-        Quaternion rotation = new Quaternion();
 
-        cellPrefab.setSize(cellSize);
         float innerRadius = cellPrefab.getInnerRadius();
         float outerRadius = cellPrefab.getOuterRadius();
 
         float offset = 0.0f;
-        if (x%2 != 0) {
+        if (x % 2 != 0)
+        {
             offset = innerRadius;
         }
 
         position.x = x * outerRadius * 1.5f;
         position.z = z * innerRadius * 2.0f + offset;
         position.y = 0f;
+        return position;
+    }
+
+    void CreateCell(int x, int z, int index) {
+        Vector3 position = getPositionFromCoordinate(x,z);
+        Quaternion rotation = new Quaternion();
 
         Cell cell = cells[index] = Instantiate<Cell>(cellPrefab, position, rotation);
 
