@@ -4,33 +4,12 @@ using UnityEngine;
 
 public class Cell : MonoBehaviour {
 
-
     public Color color;
-    public float cellSize;
-    public float outerRadius;
-    public float innerRadius;
     public int index;
     
-    public void setSize(float size) {
-        this.cellSize = size;
-        this.outerRadius = size / 2;
-        this.innerRadius = outerRadius * 0.866025404f;
-    }
-
-    internal float getOuterRadius()
-    {
-        return this.outerRadius;
-    }
-    
-
-    internal float getInnerRadius()
-    {
-        return this.innerRadius;
-    }
-
     // Use this for initialization
     void Start () {
-        Mesh mesh = CreateHexMesh(cellSize);
+        Mesh mesh = CreateHexMesh(CellMetrics.size, CellMetrics.outerRadius, CellMetrics.innerRadius);
 
         gameObject.name = "HexCell " + this.index;
 
@@ -43,22 +22,35 @@ public class Cell : MonoBehaviour {
 
         MeshRenderer renderer = gameObject.AddComponent(typeof(MeshRenderer)) as MeshRenderer;
         renderer.material.shader = Shader.Find("Unlit/Color");
-    
-        float r = 0.0f;//Random.Range(0f, 1f);
-        float g = 0.0f; //Random.Range(0f, 1f);
-        float b = 0.0f;//Random.Range(0f, 1f);
+
+        float r;
+        float g;
+        float b;
+
+        if (this.index % 2 == 0)
+        {
+            r = 0.0f; //Random.Range(0f, 1f);
+            g = 1.0f - 0.008f * index; //Random.Range(0f, 1f);
+            b = 0.0f;//Random.Range(0f, 1f);
+        }
+        else
+        {
+            r = 0.0f;//Random.Range(0f, 1f);
+            g = 0.0f; //Random.Range(0f, 1f);
+            b = 1.0f - 0.008f * index; //Random.Range(0f, 1f);
+        }
         float a = 0f;
-        color = new Color(r, g, b, a);
+        this.color = new Color(r, g, b, a);
 
         Texture2D texture = new Texture2D(1, 1);
-        texture.SetPixel(0, 0, color);
+        texture.SetPixel(0, 0, this.color);
         texture.Apply();
         renderer.material.mainTexture = texture;
 
-        renderer.material.color = color;
+        renderer.material.color = this.color;
 
         GameObject textobj = new GameObject();
-        textobj.layer = 8; //Background texts
+        textobj.layer = 5; //Background texts
         textobj.name = "HexCell "+ this.index +" text";
         TextMesh textmesh = textobj.AddComponent(typeof(TextMesh)) as TextMesh;
         textmesh.text = this.index.ToString();
@@ -74,23 +66,8 @@ public class Cell : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
-        float r;
-        float g;
-        float b;
 
-        if (this.index % 2 == 0) {
-            r = 0.0f; //Random.Range(0f, 1f);
-            g = 1.0f - 0.008f * index; //Random.Range(0f, 1f);
-            b = 0.0f;//Random.Range(0f, 1f);
-        } else
-        {
-            r = 0.0f;//Random.Range(0f, 1f);
-            g = 0.0f; //Random.Range(0f, 1f);
-            b = 1.0f - 0.008f * index; //Random.Range(0f, 1f);
-        }
-        float a = 0f;
-        color = new Color(r, g, b, a);
-        gameObject.GetComponent<Renderer>().material.color = color;
+        gameObject.GetComponent<Renderer>().material.color = this.color;
     }
 
     Mesh CreateSquareMesh(float size)
@@ -114,7 +91,7 @@ public class Cell : MonoBehaviour {
         return m;
     }
 
-    Mesh CreateHexMesh(float size) {
+    Mesh CreateHexMesh(float size, float outerRadius, float innerRadius) {
         float height = 0.0f;
 
         Mesh m = new Mesh();

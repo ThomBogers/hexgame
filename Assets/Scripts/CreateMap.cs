@@ -20,7 +20,7 @@ public class CreateMap : MonoBehaviour {
         int x = 0; // (int)Random.Range(0, grid.width);
         int y = 0; // (int)Random.Range(0, grid.height);
 
-        Vector3 playerPosition = grid.getPositionFromCoordinate(x, y);
+        Vector3 playerPosition = CellCoordinates.getPositionFromCoordinate(x, y);
         playerPosition.y = 10;
         Player player = Instantiate<Player>(playerPrefab);
         player.name = "Player";
@@ -32,7 +32,7 @@ public class CreateMap : MonoBehaviour {
             x = (int)Random.Range(0, grid.width);
             y = (int)Random.Range(0, grid.height);
 
-            Vector3 enemyPosition = grid.getPositionFromCoordinate(x, y);
+            Vector3 enemyPosition = CellCoordinates.getPositionFromCoordinate(x, y);
             enemyPosition.y = 10;
             Enemy enemy = Instantiate<Enemy>(enemyPrefab);
             enemy.name = "Enemy " + i;
