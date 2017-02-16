@@ -17,14 +17,8 @@ public class Player : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        var x = Input.GetAxis("Horizontal") * Time.deltaTime * movespeed;
-        var z = Input.GetAxis("Vertical") * Time.deltaTime * movespeed;
-        var y = Input.GetAxis("Jump") * Time.deltaTime * jumpspeed;
-        transform.Translate(x, y, z);
-
-        if (Input.GetMouseButton(0)) {
-            HandleInput();
-        }
+       
+        HandleInput();
 
         if (targetPosition.HasValue )
         {
@@ -43,23 +37,38 @@ public class Player : MonoBehaviour {
 
     }
     void HandleInput() {
+        var x = Input.GetAxis("Horizontal") * Time.deltaTime * movespeed;
+        var z = Input.GetAxis("Vertical") * Time.deltaTime * movespeed;
+        var y = Input.GetAxis("Jump") * Time.deltaTime * jumpspeed;
+        transform.Translate(x, y, z);
+
         Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(inputRay, out hit)) {
-            TouchObject(hit.transform.gameObject);
+        if (Physics.Raycast(inputRay, out hit, float.PositiveInfinity, 5)) {
+            if (Input.GetMouseButton(0)) {
+                TouchObject(hit.transform.gameObject);
+            } 
+            HoverObject(hit.transform.gameObject);
         }
     }
 
     void TouchObject(GameObject obj)  {
         
-        if(obj.tag == "Cell")
-        {
+        if(obj.tag == "Cell") {
             Cell cell = obj.GetComponent<Cell>();
-            Debug.Log("touched at " + cell.index );
             cell.color = Color.gray;
             // We only want to move in 2D at the moment
             this.targetPosition = new Vector3(obj.transform.position.x, transform.position.y, obj.transform.position.z);
         }
-        
+    }
+
+    void HoverObject(GameObject obj)
+    {
+
+        if (obj.tag == "Cell") {
+            Cell cell = obj.GetComponent<Cell>();
+            cell.underCursor = true;
+        }
+
     }
 }

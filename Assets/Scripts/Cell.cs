@@ -5,7 +5,9 @@ using UnityEngine;
 public class Cell : MonoBehaviour {
 
     public Color color;
+    public Color highlightcolor;
     public int index;
+    public bool underCursor;
     
     // Use this for initialization
     void Start () {
@@ -41,6 +43,7 @@ public class Cell : MonoBehaviour {
         }
         float a = 0f;
         this.color = new Color(r, g, b, a);
+        this.highlightcolor = Color.magenta;
 
         Texture2D texture = new Texture2D(1, 1);
         texture.SetPixel(0, 0, this.color);
@@ -66,8 +69,12 @@ public class Cell : MonoBehaviour {
     // Update is called once per frame
     void Update ()
     {
-
-        gameObject.GetComponent<Renderer>().material.color = this.color;
+        if (underCursor) {
+            gameObject.GetComponent<Renderer>().material.color = this.highlightcolor;
+        } else {
+            gameObject.GetComponent<Renderer>().material.color = this.color;
+        }
+        underCursor = false;
     }
 
     Mesh CreateSquareMesh(float size)
