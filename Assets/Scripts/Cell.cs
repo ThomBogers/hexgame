@@ -7,6 +7,8 @@ public class Cell : MonoBehaviour {
     public Color color;
     public Color highlightcolor;
     public int index;
+    public int x;
+    public int z;
     public bool underCursor;
     
     // Use this for initialization

@@ -7,12 +7,25 @@ public class Player : MonoBehaviour {
     public float movespeed = 150.0f;
     public float jumpspeed = 25.0f;
 
-    private Vector3? targetPosition = null;
+    public int x;
+    public int z;
+
+    public int health;
+
+    
+    private struct TargetPosition  {
+        public Vector3 target;
+        public bool active;
+        
+    }
+
+    private TargetPosition targetPosition;
 
     // Use this for initialization
     void Start () {
         //rigidbody.freezeRotation = true;
         GetComponent<Rigidbody>().freezeRotation = true;
+
     }
 	
 	// Update is called once per frame
@@ -20,15 +33,15 @@ public class Player : MonoBehaviour {
        
         HandleInput();
 
-        if (targetPosition.HasValue )
+        if (this.targetPosition.active )
         {
             float step = movespeed * Time.deltaTime;
 
             // We are now sure we have a target
-            Vector3 currentTarget = (Vector3)targetPosition;
+            Vector3 currentTarget = (Vector3)this.targetPosition.target;
             float distance = Vector3.Distance(transform.position, currentTarget);
             if (distance < step) {
-                targetPosition = null;
+                this.targetPosition.active = false;
             } else {
                 transform.position = Vector3.MoveTowards(transform.position, currentTarget, step);
             }
@@ -37,10 +50,10 @@ public class Player : MonoBehaviour {
 
     }
     void HandleInput() {
-        var x = Input.GetAxis("Horizontal") * Time.deltaTime * movespeed;
-        var z = Input.GetAxis("Vertical") * Time.deltaTime * movespeed;
-        var y = Input.GetAxis("Jump") * Time.deltaTime * jumpspeed;
-        transform.Translate(x, y, z);
+       // var x = Input.GetAxis("Horizontal") * Time.deltaTime * movespeed;
+       // var z = Input.GetAxis("Vertical") * Time.deltaTime * movespeed;
+       // var y = Input.GetAxis("Jump") * Time.deltaTime * jumpspeed;
+       // transform.Translate(x, y, z);
 
         Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
@@ -55,10 +68,16 @@ public class Player : MonoBehaviour {
     void TouchObject(GameObject obj)  {
         
         if(obj.tag == "Cell") {
-            Cell cell = obj.GetComponent<Cell>();
-            cell.color = Color.gray;
-            // We only want to move in 2D at the moment
-            this.targetPosition = new Vector3(obj.transform.position.x, transform.position.y, obj.transform.position.z);
+            if (! this.targetPosition.active)
+            {
+                Cell cell = obj.GetComponent<Cell>();
+                cell.color = Color.gray;
+                // We only want to move in 2D at the moment
+                this.targetPosition.active = true;
+                this.targetPosition.target = new Vector3(obj.transform.position.x, transform.position.y, obj.transform.position.z);
+                this.x = obj.GetComponent<Cell>().x;
+                this.z = obj.GetComponent<Cell>().z;
+            }
         }
     }
 
@@ -68,6 +87,11 @@ public class Player : MonoBehaviour {
         if (obj.tag == "Cell") {
             Cell cell = obj.GetComponent<Cell>();
             cell.underCursor = true;
+
+            if(cell.x == this.x && cell.z == this.z)
+            {
+                Debug.Log("Show player tooltip: "+ this.health + " " + this.x + " " + this.z);
+            }
         }
 
     }

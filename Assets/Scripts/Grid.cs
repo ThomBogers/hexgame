@@ -36,6 +36,8 @@ public class Grid : MonoBehaviour {
         cell.transform.SetParent(transform, false);
         cell.transform.localPosition = position;
         cell.index = index;
+        cell.x = x;
+        cell.z = z;
 
     }
     // Update is called once per frame
