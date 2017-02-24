@@ -5,6 +5,8 @@ using UnityEngine;
 public class Enemy : MonoBehaviour {
 
     public int health;
+    public int x;
+    public int z;
 	// Use this for initialization
 	void Start () {
 		
@@ -14,4 +16,9 @@ public class Enemy : MonoBehaviour {
 	void Update () {
 		
 	}
+
+    public void hover ()
+    {
+        Debug.Log("Show enemy tooltip: " + this.health + " " + this.x + " " + this.z);
+    }
 }

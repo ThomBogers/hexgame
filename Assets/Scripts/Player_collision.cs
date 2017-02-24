@@ -6,9 +6,12 @@ using UnityEngine.SceneManagement;
 public class Player_collision : MonoBehaviour {
 
 	// Use this for initialization
-	void Start () {
-		
-	}
+	void Start ()
+    {
+        //Do not rotate as a result of a collision;
+        GetComponent<Rigidbody>().freezeRotation = true;
+
+    }
 	
 	// Update is called once per frame
 	void Update () {

@@ -4,95 +4,73 @@ using UnityEngine;
 
 public class Player : MonoBehaviour {
 
-    public float movespeed = 150.0f;
-    public float jumpspeed = 25.0f;
-
     public int x;
     public int z;
 
     public int health;
+    public float movespeed = 150.0f;
+    public float jumpspeed = 25.0f;
 
-    
-    private struct TargetPosition  {
+
+    private struct TargetPosition
+    {
         public Vector3 target;
         public bool active;
-        
+
     }
 
     private TargetPosition targetPosition;
 
     // Use this for initialization
     void Start () {
-        //rigidbody.freezeRotation = true;
-        GetComponent<Rigidbody>().freezeRotation = true;
+		
+	}
 
-    }
-	
-	// Update is called once per frame
-	void Update () {
-       
-        HandleInput();
+    // Update is called once per frame
 
-        if (this.targetPosition.active )
-        {
-            float step = movespeed * Time.deltaTime;
-
-            // We are now sure we have a target
-            Vector3 currentTarget = (Vector3)this.targetPosition.target;
-            float distance = Vector3.Distance(transform.position, currentTarget);
-            if (distance < step) {
-                this.targetPosition.active = false;
-            } else {
-                transform.position = Vector3.MoveTowards(transform.position, currentTarget, step);
-            }
-        }
-
-
-    }
-    void HandleInput() {
-       // var x = Input.GetAxis("Horizontal") * Time.deltaTime * movespeed;
-       // var z = Input.GetAxis("Vertical") * Time.deltaTime * movespeed;
-       // var y = Input.GetAxis("Jump") * Time.deltaTime * jumpspeed;
-       // transform.Translate(x, y, z);
-
-        Ray inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(inputRay, out hit, float.PositiveInfinity, 5)) {
-            if (Input.GetMouseButton(0)) {
-                TouchObject(hit.transform.gameObject);
-            } 
-            HoverObject(hit.transform.gameObject);
-        }
+    public bool canMove () {
+        return this.targetPosition.active;
     }
 
-    void TouchObject(GameObject obj)  {
-        
-        if(obj.tag == "Cell") {
-            if (! this.targetPosition.active)
-            {
-                Cell cell = obj.GetComponent<Cell>();
-                cell.color = Color.gray;
-                // We only want to move in 2D at the moment
-                this.targetPosition.active = true;
-                this.targetPosition.target = new Vector3(obj.transform.position.x, transform.position.y, obj.transform.position.z);
-                this.x = obj.GetComponent<Cell>().x;
-                this.z = obj.GetComponent<Cell>().z;
-            }
-        }
-    }
-
-    void HoverObject(GameObject obj)
+    public void moveTo (Vector3 target)
     {
+        // We only want to move in 2D at the moment, so use our own y for height
+        this.targetPosition.target = new Vector3(target.x, transform.position.y, target.z);
+        this.targetPosition.active = true;
+    }
 
-        if (obj.tag == "Cell") {
-            Cell cell = obj.GetComponent<Cell>();
-            cell.underCursor = true;
+    void move ()
+    {
+        float step = movespeed * Time.deltaTime;
 
-            if(cell.x == this.x && cell.z == this.z)
-            {
-                Debug.Log("Show player tooltip: "+ this.health + " " + this.x + " " + this.z);
-            }
+        // We are now sure we have a target
+        Vector3 currentTarget = (Vector3)this.targetPosition.target;
+        float distance = Vector3.Distance(transform.position, currentTarget);
+        if (distance < step)
+        {
+            this.targetPosition.active = false;
+            State.finishTurn();
         }
+        else
+        {
+            transform.position = Vector3.MoveTowards(transform.position, currentTarget, step);
+        }
+
+        CellCoordinates coords = CellCoordinates.getCoordinatesFromPostion(transform.position);
+        this.x = coords.x;
+        this.z = coords.z;
+    } 
+
+    public void hover() { 
+        Debug.Log("Show player tooltip: " + this.health + " " + this.x + " " + this.z);
+    }
+    void Update()
+    {
+        if (this.targetPosition.active)
+        {
+            this.move();
+        }
+
 
     }
 }

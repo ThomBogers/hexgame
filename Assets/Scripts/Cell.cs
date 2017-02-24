@@ -100,6 +100,15 @@ public class Cell : MonoBehaviour {
         return m;
     }
 
+    public void touch() {
+        this.color = Color.gray;
+    }
+
+    public void hover()
+    {
+        this.underCursor = true;
+    }
+
     Mesh CreateHexMesh(float size, float outerRadius, float innerRadius) {
         float height = 0.0f;
 
